@@ -56,19 +56,22 @@
         }
 
         /* Кнопка "Закрыть" */
-        .close-btn {
-            background: none;
-            border: none;
-            color: #4a90e2;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            padding: 10px 20px;
-            transition: opacity 0.2s;
-        }
+  .close-btn {
+    background: transparent;
+    border: 3px solid #4a90e2;  /* Синяя обводка, как у круга */
+    color: #4a90e2;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 12px 40px;         /* Чуть больше отступы, чтобы было похоже на кнопку */
+    border-radius: 50px;         /* Закруглённые края, как у таблетки */
+    transition: all 0.2s;
+}
 
-        .close-btn:active {
-            opacity: 0.6;
+.close-btn:active {
+    background: #4a90e2;         /* При нажатии кнопка заливается синим */
+    color: #ffffff;              /* Текст становится белым */
+}
         }
     </style>
 </head>
@@ -87,7 +90,7 @@
         <p>Выход не доступен, так как вы не являетесь админом сервера. 😔</p>
         
         <!-- Кнопка закрытия -->
-        <button class="close-btn" onclick="closeApp()">Закрыть</button>
+        <button class="close-btn" onclick="closeApp()">Вернуться в мир</button>
     </div>
 
     <script>
