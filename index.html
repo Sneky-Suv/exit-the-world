@@ -7,16 +7,19 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body {
+        
+        html, body {
             margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            overflow: hidden;
+            position: fixed;
+            touch-action: none;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            height: 100vh; overflow: hidden;
             background: #ffffff;
             color: #333;
             display: flex; justify-content: center; align-items: center;
         }
 
-        /* ====== ОБЩИЕ ЭКРАНЫ ====== */
         .screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: none; flex-direction: column;
@@ -33,7 +36,7 @@
         .start-buttons { position: relative; width: 100%; height: 150px; }
         .btn-yes, .btn-no {
             position: absolute; border: none; border-radius: 50px;
-            font-weight: bold; cursor: pointer; transition: all 0.3s ease;
+            font-weight: bold; cursor: pointer;
             font-family: inherit;
         }
         .btn-yes {
@@ -47,23 +50,34 @@
             font-size: 20px; padding: 12px 40px;
             left: 50%; transform: translateX(-50%);
             top: 100px; z-index: 1;
+            transition: none;
         }
 
         /* ====== ЭКРАН 2: ИГРА ====== */
-        #game-screen { background: #ffffff; border: 10px solid #ff69b4; }
+        #game-screen { 
+            background: #ffffff; 
+            border: 10px solid #ff69b4;
+            box-sizing: border-box;
+        }
         #game-screen .hud {
             position: absolute; top: 15px; left: 20px; font-size: 22px;
             font-weight: bold; color: #333; z-index: 5;
             background: rgba(255,255,255,0.8);
             padding: 5px 15px; border-radius: 20px;
         }
+        
+        /* Пиксельное сердце игрока */
         .player-heart {
             position: absolute; bottom: 80px;
-            font-size: 50px; z-index: 10;
-            transition: transform 0.1s;
+            width: 50px; height: 50px;
+            z-index: 10;
+            image-rendering: pixelated;
         }
+
         .bullet {
-            position: absolute; font-size: 20px; z-index: 8;
+            position: absolute; font-size: 30px; z-index: 8;
+            color: red;
+            line-height: 1;
         }
         .enemy {
             position: absolute; font-size: 30px; z-index: 6;
@@ -75,7 +89,7 @@
             transform: translateY(-60px);
         }
 
-        /* ====== ЭКРАН 3: ФИНАЛ (ВЫБОР) ====== */
+        /* ====== ЭКРАН 3: ФИНАЛ ====== */
         #final-screen {
             background-color: #ffb6c1;
             transition: background-color 0.6s ease;
@@ -93,11 +107,11 @@
         .h4  { top: 28%; right: 5%;   font-size: 22px; }
         .h5  { top: 40%; left: 10%;   font-size: 14px; }
         .h6  { top: 48%; right: 8%;   font-size: 30px; }
-        .h7  { top: 60%; left: 6%;    font-size: 18px; }
+        .h7  { top: 60%; left: 6%;font-size: 18px; }
         .h8  { top: 70%; right: 7%;   font-size: 24px; }
         .h9  { top: 80%; left: 12%;   font-size: 32px; }
         .h10 { top: 90%; right: 14%;  font-size: 15px; }
-        .h11 { top: 95%; left: 38%;   font-size: 20px;}
+        .h11 { top: 95%; left: 38%;   font-size: 20px; }
         .h12 { top: 6%;  right: 38%;  font-size: 14px; }
         .h13 { top: 14%; left: 25%;   font-size: 12px; }
         .h14 { top: 18%; right: 28%;  font-size: 20px; }
@@ -131,15 +145,10 @@
         }
         .final-btn:active { background: #4a90e2; color: #fff; }
         
-        .emoji-above {
-            font-size: 40px; display: block; margin-bottom: 5px;
-        }
+        .emoji-above { font-size: 40px; display: block; margin-bottom: 5px; }
 
         /* ====== ЭКРАН 4: НЕДОСТУПНО ====== */
-        #unavailable-screen {
-            background-color: #ffb6c1;
-        }
-        #unavailable-screen .heart-bg { opacity: 0.35; }
+        #unavailable-screen { background-color: #ffb6c1; }
         .unavailable-container {
             position: relative; z-index: 1;
             padding: 20px; max-width: 400px; width: 100%;
@@ -188,11 +197,11 @@
         <div id="game-field"></div>
     </div>
 
-    <!-- ЭКРАН 3: Финал (Выбор) -->
+    <!-- ЭКРАН 3: Финал -->
     <div id="final-screen" class="screen">
         <span class="heart-bg h1">❤</span><span class="heart-bg h2">❤</span><span class="heart-bg h3">❤</span><span class="heart-bg h4">❤</span>
-        <span class="heart-bg h5">❤</span><span class="heart-bg h6">❤</span><span class="heart-bg h7">❤</span><span class="heart-bg h8">❤</span>
-        <span class="heart-bg h9">❤</span><span class="heart-bg h10">❤</span><span class="heart-bg h11">❤</span><span class="heart-bg h12">❤</span><span class="heart-bg h13">❤</span><span class="heart-bg h14">❤</span><span class="heart-bg h15">❤</span><span class="heart-bg h16">❤</span>
+        <span class="heart-bg h5">❤</span><span class="heart-bg h6">❤</span><span class="heart-bg h7">❤</span><span class="heart-bg h8">❤</span><span class="heart-bg h9">❤</span><span class="heart-bg h10">❤</span><span class="heart-bg h11">❤</span><span class="heart-bg h12">❤</span>
+        <span class="heart-bg h13">❤</span><span class="heart-bg h14">❤</span><span class="heart-bg h15">❤</span><span class="heart-bg h16">❤</span>
         <span class="heart-bg h17">❤</span><span class="heart-bg h18">❤</span><span class="heart-bg h19">❤</span><span class="heart-bg h20">❤</span>
         <span class="heart-bg h21">❤</span><span class="heart-bg h22">❤</span>
 
@@ -233,7 +242,7 @@
         tg.ready();
         tg.expand();
 
-        // ====== ЭКРАН 1: ЛОГИКА КНОПКИ "НЕТ" ======
+        // ====== ЭКРАН 1: КНОПКА "НЕТ" ======
         let noButtonPositions = 0;
         const noPositions = [
             { top: '10px', left: '10%' },
@@ -270,6 +279,35 @@
         let playerHeart = null;
         let bullets = [];
         let enemies = [];
+        let heartX = 0; // Позиция сердца по X (в пикселях)
+
+        // Пиксельное сердце через SVG
+        const heartSVG = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="2" y="1" width="3" height="1" fill="#ff0000"/>
+                <rect x="3" y="2" width="2" height="1" fill="#ff0000"/>
+                <rect x="11" y="1" width="3" height="1" fill="#ff0000"/>
+                <rect x="11" y="2" width="2" height="1" fill="#ff0000"/>
+                <rect x="1" y="2" width="2" height="1" fill="#ff0000"/>
+                <rect x="1" y="3" width="1" height="1" fill="#ff0000"/>
+                <rect x="14" y="2" width="1" height="1" fill="#ff0000"/>
+                <rect x="14" y="3" width="1" height="1" fill="#ff0000"/>
+                <rect x="2" y="3" width="2" height="1" fill="#ff0000"/>
+                <rect x="12" y="3" width="2" height="1" fill="#ff0000"/>
+                <rect x="0" y="4" width="1" height="1" fill="#ff0000"/>
+                <rect x="15" y="4" width="1" height="1" fill="#ff0000"/>
+                <rect x="3" y="4" width="10" height="1" fill="#ff0000"/>
+                <rect x="3" y="5" width="10" height="1" fill="#ff0000"/>
+                <rect x="3" y="6" width="10" height="1" fill="#ff0000"/>
+                <rect x="3" y="7" width="10" height="1" fill="#ff0000"/>
+                <rect x="4" y="8" width="8" height="1" fill="#ff0000"/>
+                <rect x="4" y="9" width="8" height="1" fill="#ff0000"/>
+                <rect x="5" y="10" width="6" height="1" fill="#ff0000"/>
+                <rect x="5" y="11" width="6" height="1" fill="#ff0000"/>
+                <rect x="6" y="12" width="4" height="1" fill="#ff0000"/>
+                <rect x="6" y="13" width="4" height="1" fill="#ff0000"/>
+                <rect x="7" y="14" width="2" height="1" fill="#ff0000"/>
+            </svg>
+        `;
 
         function startGame() {
             showScreen('game-screen');
@@ -278,25 +316,45 @@
             gameRunning = true;
             gameField.innerHTML = '';
             
+            // Создаём пиксельное сердце
             playerHeart = document.createElement('div');
             playerHeart.className = 'player-heart';
-            playerHeart.innerText = '💛';playerHeart.style.left = '50%';
-            playerHeart.style.transform = 'translateX(-50%)';
+            playerHeart.innerHTML = heartSVG;
             gameField.appendChild(playerHeart);
 
+            // Начальная позиция — по центру
+            heartX = (window.innerWidth - 50) / 2;
+            playerHeart.style.left = heartX + 'px';
+
+            // Свайп
             let startX = 0;
-            document.getElementById('game-screen').addEventListener('touchstart', (e) => {
+            let startHeartX = 0;
+            const gameScreen = document.getElementById('game-screen');
+            const borderSize = 10; // Толщина рамки
+            const heartWidth = 50;
+
+            gameScreen.addEventListener('touchstart', (e) => {
                 startX = e.touches[0].clientX;
-            });
-            document.getElementById('game-screen').addEventListener('touchmove', (e) => {
+                startHeartX = heartX;
+            }, { passive: false });
+
+            gameScreen.addEventListener('touchmove', (e) => {
                 if (!gameRunning) return;
+                e.preventDefault();
+                
                 const deltaX = e.touches[0].clientX - startX;
-                const currentLeft = parseFloat(playerHeart.style.left) || 50;
-                let newLeft = currentLeft + (deltaX / window.innerWidth) * 100;
-                newLeft = Math.max(5, Math.min(95, newLeft));
-                playerHeart.style.left = newLeft + '%';
-                startX = e.touches[0].clientX;
-            });
+                let newHeartX = startHeartX + deltaX;
+
+                // Ограничение: от левой рамки до правой рамки
+                const minX = borderSize;
+                const maxX = window.innerWidth - borderSize - heartWidth;
+                
+                if (newHeartX < minX) newHeartX = minX;
+                if (newHeartX > maxX) newHeartX = maxX;
+
+                heartX = newHeartX;
+                playerHeart.style.left = heartX + 'px';
+            }, { passive: false });
 
             setInterval(shootBullet, 800);
             setInterval(spawnEnemy, 1200);
@@ -307,15 +365,17 @@
             if (!gameRunning) return;
             const bullet = document.createElement('div');
             bullet.className = 'bullet';
-            bullet.innerText = '💛';
-            const heartRect = playerHeart.getBoundingClientRect();
-            bullet.style.left = (heartRect.left + heartRect.width / 2 - 10) + 'px';
+            bullet.innerText = '•';
+            
+            // Центр сердца
+            const heartCenterX = heartX + 25;
+            bullet.style.left = (heartCenterX - 10) + 'px';
             bullet.style.bottom = '80px';
             gameField.appendChild(bullet);
             
             const bulletObj = {
                 element: bullet,
-                y: window.innerHeight - 130,
+                y: 80,
                 speed: 4
             };
             bullets.push(bulletObj);
@@ -342,16 +402,18 @@
         function gameLoop() {
             if (!gameRunning) return;
 
+            // Пульки вверх
             bullets.forEach((b, index) => {
-                b.y -= b.speed;
-                b.element.style.transform = `translateY(${-b.y + (window.innerHeight - 130)}px)`;
+                b.y += b.speed;
+                b.element.style.bottom = b.y + 'px';
                 
-                if (b.y < -50) {
+                if (b.y > window.innerHeight) {
                     b.element.remove();
                     bullets.splice(index, 1);
                 }
             });
 
+            // Миньоны вниз
             enemies.forEach((e, index) => {
                 if (e.hit) return;
                 e.y += e.speed;
@@ -382,7 +444,8 @@
                                 endGame();
                             }
                         }, 800);
-                    }});
+                    }
+                });
 
                 if (e.y > window.innerHeight) {
                     e.element.remove();
@@ -400,18 +463,16 @@
             }, 1000);
         }
 
-        // ====== ЭКРАН 3: ЛОГИКА ======
+        // ====== ЭКРАН 3 ======
         function chooseStay() {
-            // Возврат в чат Telegram
             tg.close();
         }
 
         function chooseLeave() {
-            // Переход на экран "Недоступно"
             showScreen('unavailable-screen');
         }
 
-        // ====== ЭКРАН 4: ЗАКРЫТИЕ ======
+        // ====== ЭКРАН 4 ======
         function closeApp() {
             tg.close();
         }
