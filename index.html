@@ -10,7 +10,6 @@
             margin: 0;
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            /* Розовый фон */
             background-color: #ffb6c1;
             
             display: flex;
@@ -23,7 +22,7 @@
             overflow: hidden;
         }
 
-        /* Сердечки на фоне — расположены вручную, разных размеров */
+        /* Сердечки на фоне */
         .heart {
             position: absolute;
             color: #ff69b4;
@@ -33,29 +32,40 @@
             z-index: 0;
         }
 
-        /* Позиции и размеры сердечек */
-        .h1  { top: 5%;  left: 8%;   font-size: 22px; }
-        .h2  { top: 12%; right: 12%;  font-size: 14px; }
-        .h3  { top: 22%; left: 5%;   font-size: 30px; }
-        .h4  { top: 30%; right: 6%;  font-size: 18px; }
-        .h5  { top: 42%; left: 12%;  font-size: 12px; }
-        .h6  { top: 50%; right: 10%; font-size: 26px; }
-        .h7  { top: 62%; left: 7%;   font-size: 16px; }
-        .h8  { top: 72%; right: 8%;  font-size: 20px; }
-        .h9  { top: 82%; left: 15%;  font-size: 28px; }
-        .h10 { top: 90%; right: 15%; font-size: 13px; }
-        .h11 { top: 95%; left: 40%;  font-size: 18px; }
-        .h12 { top: 8%;  right: 35%; font-size: 12px; }
+        /* Позиции и размеры сердечек (старые + новые, некоторые увеличены) */
+        .h1  { top: 4%;  left: 6%;    font-size: 28px; }  /* увеличено */
+        .h2  { top: 10%; right: 10%;  font-size: 16px; }
+        .h3  { top: 20%; left: 4%;    font-size: 38px; }  /* большое */
+        .h4  { top: 28%; right: 5%;   font-size: 22px; }
+        .h5  { top: 40%; left: 10%;   font-size: 14px; }
+        .h6  { top: 48%; right: 8%;   font-size: 30px; }  /* увеличено */
+        .h7  { top: 60%; left: 6%;    font-size: 18px; }
+        .h8  { top: 70%; right: 7%;   font-size: 24px; }
+        .h9  { top: 80%; left: 12%;   font-size: 32px; }  /* увеличено */
+        .h10 { top: 90%; right: 14%;  font-size: 15px; }
+        .h11 { top: 95%; left: 38%;   font-size: 20px; }
+        .h12 { top: 6%;  right: 38%;  font-size: 14px; }
+
+        /* Новые сердечки */
+        .h13 { top: 14%; left: 25%;   font-size: 12px; }
+        .h14 { top: 18%; right: 28%;  font-size: 20px; }
+        .h15 { top: 34%; left: 2%;    font-size: 16px; }
+        .h16 { top: 36%; right: 2%;   font-size: 12px; }
+        .h17 { top: 55%; left: 2%;    font-size: 22px; }
+        .h18 { top: 58%; right: 3%;   font-size: 14px; }
+        .h19 { top: 76%; left: 3%;    font-size: 12px; }
+        .h20 { top: 84%; right: 3%;   font-size: 26px; }  /* увеличено */
+        .h21 { top: 97%; left: 8%;    font-size: 14px; }
+        .h22 { top: 97%; right: 8%;   font-size: 18px; }
 
         .container {
             padding: 20px;
             max-width: 400px;
             width: 100%;
             position: relative;
-            z-index: 1; /* Текст и кнопка поверх сердечек */
+            z-index: 1;
         }
 
-        /* Синий круг с рукой */
         .icon-circle {
             width: 120px;
             height: 120px;
@@ -73,18 +83,17 @@
             font-size: 28px;
             font-weight: bold;
             margin-bottom: 15px;
-            color: #111; /* Тёмный заголовок */
+            color: #111;
         }
 
         p {
             font-size: 16px;
-            color: #222; /* Тёмный, хорошо читаемый текст */
+            color: #222;
             line-height: 1.5;
             margin-bottom: 40px;
             font-weight: 500;
         }
 
-        /* Кнопка с обводкой (таблетка) */
         .close-btn {
             background: transparent;
             border: 3px solid #4a90e2;
@@ -105,7 +114,6 @@
 </head>
 <body>
 
-    <!-- Сердечки на фоне -->
     <span class="heart h1">❤</span>
     <span class="heart h2">❤</span>
     <span class="heart h3">❤</span>
@@ -118,6 +126,16 @@
     <span class="heart h10">❤</span>
     <span class="heart h11">❤</span>
     <span class="heart h12">❤</span>
+    <span class="heart h13">❤</span>
+    <span class="heart h14">❤</span>
+    <span class="heart h15">❤</span>
+    <span class="heart h16">❤</span>
+    <span class="heart h17">❤</span>
+    <span class="heart h18">❤</span>
+    <span class="heart h19">❤</span>
+    <span class="heart h20">❤</span>
+    <span class="heart h21">❤</span>
+    <span class="heart h22">❤</span>
 
     <div class="container">
         <div class="icon-circle">
@@ -126,7 +144,7 @@
         
         <h1>Недоступно</h1>
         
-        <p>Выход не доступен, так как вы не являетесь админом сервера. 😔</p>
+        <p>Выход не доступен, так как вы не являетесь админом сервера. 😌</p>
         
         <button class="close-btn" onclick="closeApp()">Вернуться в мир</button>
     </div>
