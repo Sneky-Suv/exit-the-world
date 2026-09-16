@@ -55,7 +55,7 @@
 
         /* ====== ЭКРАН 2: ИГРА ====== */
         #game-screen { 
-            background: #ffffff; 
+            background: #eaf4fb; /* Мягкий голубой */
             border: 10px solid #ff69b4;
             box-sizing: border-box;
         }
@@ -66,12 +66,15 @@
             padding: 5px 15px; border-radius: 20px;
         }
         
-        /* Пиксельное сердце игрока */
+        /* Красное большое сердце */
         .player-heart {
             position: absolute; bottom: 80px;
-            width: 50px; height: 50px;
+            width: 60px; height: 60px;
             z-index: 10;
-            image-rendering: pixelated;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 55px;
+            color: red;
+            line-height: 1;
         }
 
         .bullet {
@@ -86,7 +89,7 @@
         .enemy.hit {
             color: #b06bff !important;
             opacity: 0;
-            transform: translateY(-60px);
+            transform: translateY(-100px); /* Летит ВВЕРХ */
         }
 
         /* ====== ЭКРАН 3: ФИНАЛ ====== */
@@ -104,10 +107,10 @@
         .h1  { top: 4%;  left: 6%;    font-size: 28px; }
         .h2  { top: 10%; right: 10%;  font-size: 16px; }
         .h3  { top: 20%; left: 4%;    font-size: 38px; }
-        .h4  { top: 28%; right: 5%;   font-size: 22px; }
+        .h4  { top: 28%; right: 5%;   font-size: 22px;}
         .h5  { top: 40%; left: 10%;   font-size: 14px; }
         .h6  { top: 48%; right: 8%;   font-size: 30px; }
-        .h7  { top: 60%; left: 6%;font-size: 18px; }
+        .h7  { top: 60%; left: 6%;    font-size: 18px; }
         .h8  { top: 70%; right: 7%;   font-size: 24px; }
         .h9  { top: 80%; left: 12%;   font-size: 32px; }
         .h10 { top: 90%; right: 14%;  font-size: 15px; }
@@ -127,12 +130,33 @@
         .final-container {
             position: relative; z-index: 1;
             padding: 20px; width: 100%; max-width: 400px;
+            display: flex; flex-direction: column; align-items: center;
         }
-        .final-container h2 {
-            font-size: 26px; margin-bottom: 20px; color: #111;
+
+        /* Центральный смайл */
+        .center-emoji {
+            font-size: 80px;
+            margin-bottom: 30px;
+            animation: tgPop 0.4s ease-out;
+            display: inline-block;
+            transition: transform 0.2s;
         }
+        .center-emoji.wiggle {
+            animation: wiggle 1.2s ease-in-out infinite;
+        }
+        @keyframes tgPop {
+            0% { transform: scale(0.3); opacity: 0; }
+            60% { transform: scale(1.15); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+
         .final-buttons {
             display: flex; flex-direction: column; gap: 15px; align-items: center;
+            width: 100%;
         }
         .final-btn {
             background: rgba(255,255,255,0.7);
@@ -144,8 +168,6 @@
             display: flex; align-items: center; justify-content: center; gap: 10px;
         }
         .final-btn:active { background: #4a90e2; color: #fff; }
-        
-        .emoji-above { font-size: 40px; display: block; margin-bottom: 5px; }
 
         /* ====== ЭКРАН 4: НЕДОСТУПНО ====== */
         #unavailable-screen { background-color: #ffb6c1; }
@@ -186,36 +208,37 @@
     <div id="start-screen" class="screen active">
         <h1>Вы хотите поиграть в игру?</h1>
         <div class="start-buttons">
-            <button class="btn-yes" onclick="startGame()">Да</button>
+            <button class="btn-yes"onclick="startGame()">Да</button>
             <button class="btn-no" id="btnNo" onmouseover="moveNoButton()" onclick="moveNoButton()">Нет</button>
         </div>
     </div>
 
     <!-- ЭКРАН 2: Игра -->
     <div id="game-screen" class="screen">
-        <div class="hud">Убито: <span id="score">0</span> / 50</div>
+        <div class="hud">Убито: <span id="score">0</span> / 30</div>
         <div id="game-field"></div>
     </div>
 
     <!-- ЭКРАН 3: Финал -->
     <div id="final-screen" class="screen">
         <span class="heart-bg h1">❤</span><span class="heart-bg h2">❤</span><span class="heart-bg h3">❤</span><span class="heart-bg h4">❤</span>
-        <span class="heart-bg h5">❤</span><span class="heart-bg h6">❤</span><span class="heart-bg h7">❤</span><span class="heart-bg h8">❤</span><span class="heart-bg h9">❤</span><span class="heart-bg h10">❤</span><span class="heart-bg h11">❤</span><span class="heart-bg h12">❤</span>
+        <span class="heart-bg h5">❤</span><span class="heart-bg h6">❤</span><span class="heart-bg h7">❤</span><span class="heart-bg h8">❤</span>
+        <span class="heart-bg h9">❤</span><span class="heart-bg h10">❤</span><span class="heart-bg h11">❤</span><span class="heart-bg h12">❤</span>
         <span class="heart-bg h13">❤</span><span class="heart-bg h14">❤</span><span class="heart-bg h15">❤</span><span class="heart-bg h16">❤</span>
         <span class="heart-bg h17">❤</span><span class="heart-bg h18">❤</span><span class="heart-bg h19">❤</span><span class="heart-bg h20">❤</span>
         <span class="heart-bg h21">❤</span><span class="heart-bg h22">❤</span>
 
         <div class="final-container">
-            <h2>Что вы выберете?</h2>
+            <span class="center-emoji wiggle" id="centerEmoji">👀</span>
             <div class="final-buttons">
-                <div>
-                    <span class="emoji-above" id="emoji-stay">🤗</span>
-                    <button class="final-btn" onclick="chooseStay()">Остаться в игре</button>
-                </div>
-                <div>
-                    <span class="emoji-above" id="emoji-leave">😱</span>
-                    <button class="final-btn" onclick="chooseLeave()">Покинуть игру</button>
-                </div>
+                <button class="final-btn" id="btnStay" 
+                        onmouseover="showEmoji('🤗')" 
+                        onmouseout="resetEmoji()"
+                        onclick="chooseStay()">Остаться в игре</button>
+                <button class="final-btn" id="btnLeave" 
+                        onmouseover="showEmoji('😭')" 
+                        onmouseout="resetEmoji()"
+                        onclick="chooseLeave()">Покинуть игру</button>
             </div>
         </div>
     </div>
@@ -261,8 +284,7 @@
             } else {
                 btn.style.top = '100px';
                 btn.style.left = '50%';
-                btn.style.transform = 'translateX(-50%)';
-                noButtonPositions = 0;
+                btn.style.transform = 'translateX(-50%)';noButtonPositions = 0;
             }
         }
 
@@ -279,35 +301,9 @@
         let playerHeart = null;
         let bullets = [];
         let enemies = [];
-        let heartX = 0; // Позиция сердца по X (в пикселях)
-
-        // Пиксельное сердце через SVG
-        const heartSVG = `
-            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 16 16" shape-rendering="crispEdges"><rect x="2" y="1" width="3" height="1" fill="#ff0000"/>
-                <rect x="3" y="2" width="2" height="1" fill="#ff0000"/>
-                <rect x="11" y="1" width="3" height="1" fill="#ff0000"/>
-                <rect x="11" y="2" width="2" height="1" fill="#ff0000"/>
-                <rect x="1" y="2" width="2" height="1" fill="#ff0000"/>
-                <rect x="1" y="3" width="1" height="1" fill="#ff0000"/>
-                <rect x="14" y="2" width="1" height="1" fill="#ff0000"/>
-                <rect x="14" y="3" width="1" height="1" fill="#ff0000"/>
-                <rect x="2" y="3" width="2" height="1" fill="#ff0000"/>
-                <rect x="12" y="3" width="2" height="1" fill="#ff0000"/>
-                <rect x="0" y="4" width="1" height="1" fill="#ff0000"/>
-                <rect x="15" y="4" width="1" height="1" fill="#ff0000"/>
-                <rect x="3" y="4" width="10" height="1" fill="#ff0000"/>
-                <rect x="3" y="5" width="10" height="1" fill="#ff0000"/>
-                <rect x="3" y="6" width="10" height="1" fill="#ff0000"/>
-                <rect x="3" y="7" width="10" height="1" fill="#ff0000"/>
-                <rect x="4" y="8" width="8" height="1" fill="#ff0000"/>
-                <rect x="4" y="9" width="8" height="1" fill="#ff0000"/>
-                <rect x="5" y="10" width="6" height="1" fill="#ff0000"/>
-                <rect x="5" y="11" width="6" height="1" fill="#ff0000"/>
-                <rect x="6" y="12" width="4" height="1" fill="#ff0000"/>
-                <rect x="6" y="13" width="4" height="1" fill="#ff0000"/>
-                <rect x="7" y="14" width="2" height="1" fill="#ff0000"/>
-            </svg>
-        `;
+        let heartX = 0;
+        const heartWidth = 60;
+        const borderSize = 10;
 
         function startGame() {
             showScreen('game-screen');
@@ -316,22 +312,18 @@
             gameRunning = true;
             gameField.innerHTML = '';
             
-            // Создаём пиксельное сердце
             playerHeart = document.createElement('div');
             playerHeart.className = 'player-heart';
-            playerHeart.innerHTML = heartSVG;
+            playerHeart.innerText = '❤';
             gameField.appendChild(playerHeart);
 
-            // Начальная позиция — по центру
-            heartX = (window.innerWidth - 50) / 2;
+            heartX = (window.innerWidth - heartWidth) / 2;
             playerHeart.style.left = heartX + 'px';
 
-            // Свайп
+            // Управление: свайп (мобилка) + мышь (ПК)
             let startX = 0;
             let startHeartX = 0;
             const gameScreen = document.getElementById('game-screen');
-            const borderSize = 10; // Толщина рамки
-            const heartWidth = 50;
 
             gameScreen.addEventListener('touchstart', (e) => {
                 startX = e.touches[0].clientX;
@@ -341,22 +333,23 @@
             gameScreen.addEventListener('touchmove', (e) => {
                 if (!gameRunning) return;
                 e.preventDefault();
-                
                 const deltaX = e.touches[0].clientX - startX;
                 let newHeartX = startHeartX + deltaX;
-
-                // Ограничение: от левой рамки до правой рамки
-                const minX = borderSize;
-                const maxX = window.innerWidth - borderSize - heartWidth;
-                
-                if (newHeartX < minX) newHeartX = minX;
-                if (newHeartX > maxX) newHeartX = maxX;
-
+                newHeartX = Math.max(borderSize, Math.min(window.innerWidth - borderSize - heartWidth, newHeartX));
                 heartX = newHeartX;
                 playerHeart.style.left = heartX + 'px';
             }, { passive: false });
 
-            setInterval(shootBullet, 800);
+            // Мышь (ПК)
+            gameScreen.addEventListener('mousemove', (e) => {
+                if (!gameRunning) return;
+                let newHeartX = e.clientX - heartWidth / 2;
+                newHeartX = Math.max(borderSize, Math.min(window.innerWidth - borderSize - heartWidth, newHeartX));
+                heartX = newHeartX;
+                playerHeart.style.left = heartX + 'px';
+            });
+
+            setInterval(shootBullet, 500); // Быстрее
             setInterval(spawnEnemy, 1200);
             requestAnimationFrame(gameLoop);
         }
@@ -366,19 +359,16 @@
             const bullet = document.createElement('div');
             bullet.className = 'bullet';
             bullet.innerText = '•';
-            
-            // Центр сердца
-            const heartCenterX = heartX + 25;
+            const heartCenterX = heartX + heartWidth / 2;
             bullet.style.left = (heartCenterX - 10) + 'px';
             bullet.style.bottom = '80px';
             gameField.appendChild(bullet);
             
-            const bulletObj = {
+            bullets.push({
                 element: bullet,
                 y: 80,
-                speed: 4
-            };
-            bullets.push(bulletObj);
+                speed: 6 // Быстрее
+            });
         }
 
         function spawnEnemy() {
@@ -390,36 +380,37 @@
             enemy.style.top = '-50px';
             gameField.appendChild(enemy);
 
-            const enemyObj = {
+            enemies.push({
                 element: enemy,
                 y: -50,
                 speed: 1.5,
                 hit: false
-            };
-            enemies.push(enemyObj);
+            });
         }
 
         function gameLoop() {
             if (!gameRunning) return;
 
             // Пульки вверх
-            bullets.forEach((b, index) => {
+            for (let i = bullets.length - 1; i >= 0; i--) {
+                const b = bullets[i];
                 b.y += b.speed;
-                b.element.style.bottom = b.y + 'px';
-                
-                if (b.y > window.innerHeight) {
+                b.element.style.bottom = b.y + 'px';if (b.y > window.innerHeight) {
                     b.element.remove();
-                    bullets.splice(index, 1);
+                    bullets.splice(i, 1);
                 }
-            });
+            }
 
-            // Миньоны вниз
-            enemies.forEach((e, index) => {
-                if (e.hit) return;
+            // Миньоны вниз + проверка попаданий
+            for (let i = enemies.length - 1; i >= 0; i--) {
+                const e = enemies[i];
+                if (e.hit) continue;
                 e.y += e.speed;
                 e.element.style.transform = `translateY(${e.y}px)`;
                 
-                bullets.forEach((b, bIndex) => {
+                let wasHit = false;
+                for (let j = bullets.length - 1; j >= 0; j--) {
+                    const b = bullets[j];
                     const enemyRect = e.element.getBoundingClientRect();
                     const bulletRect = b.element.getBoundingClientRect();
                     
@@ -432,26 +423,32 @@
                         e.hit = true;
                         e.element.classList.add('hit');
                         b.element.remove();
-                        bullets.splice(bIndex, 1);
-
-                        setTimeout(() => {
-                            e.element.remove();
-                            enemies.splice(index, 1);
-                            score++;
-                            document.getElementById('score').innerText = score;
-                            
-                            if (score >= 50) {
-                                endGame();
-                            }
-                        }, 800);
+                        bullets.splice(j, 1);
+                        wasHit = true;
+                        break;
                     }
-                });
+                }
+
+                if (wasHit) {
+                    setTimeout(() => {
+                        e.element.remove();
+                        const idx = enemies.indexOf(e);
+                        if (idx > -1) enemies.splice(idx, 1);
+                        score++;
+                        document.getElementById('score').innerText = score;
+                        
+                        if (score >= 30) {
+                            endGame();
+                        }
+                    }, 800);
+                    continue;
+                }
 
                 if (e.y > window.innerHeight) {
                     e.element.remove();
-                    enemies.splice(index, 1);
+                    enemies.splice(i, 1);
                 }
-            });
+            }
 
             requestAnimationFrame(gameLoop);
         }
@@ -463,13 +460,39 @@
             }, 1000);
         }
 
-        // ====== ЭКРАН 3 ======
+        // ====== ЭКРАН 3: ЛОГИКА ======
+        const centerEmoji = document.getElementById('centerEmoji');
+
+        function showEmoji(emoji) {
+            centerEmoji.innerText = emoji;
+            centerEmoji.classList.remove('wiggle');
+            centerEmoji.classList.remove('tgPop');
+            void centerEmoji.offsetWidth; // Перезапуск анимации
+            centerEmoji.classList.add('tgPop');
+        }
+
+        function resetEmoji() {
+            centerEmoji.innerText = '👀';
+            centerEmoji.classList.add('wiggle');
+        }
+
         function chooseStay() {
-            tg.close();
+            // Анимация смайла, потом действие
+            centerEmoji.innerText = '🤗';
+            centerEmoji.classList.remove('wiggle');
+            centerEmoji.classList.add('tgPop');
+            setTimeout(() => {
+                tg.close();
+            }, 800);
         }
 
         function chooseLeave() {
-            showScreen('unavailable-screen');
+            centerEmoji.innerText = '😭';
+            centerEmoji.classList.remove('wiggle');
+            centerEmoji.classList.add('tgPop');
+            setTimeout(() => {
+                showScreen('unavailable-screen');
+            }, 800);
         }
 
         // ====== ЭКРАН 4 ======
