@@ -3,50 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Недоступно</title>
+    <title>Выход из мира</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #ffb6c1;
-            
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: center;
+            height: 100vh; overflow: hidden;
+            background: #ffffff;
             color: #333;
-            position: relative;
-            overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
         }
 
-        /* Сердечки на фоне */
-        .heart {
-            position: absolute;
-            color: #ff69b4;
-            opacity: 0.35;
-            user-select: none;
-            pointer-events: none;
-            z-index: 0;
+        /* ====== ОБЩИЕ ЭКРАНЫ ====== */
+        .screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: none; flex-direction: column;
+            justify-content: center; align-items: center;
+            text-align: center; z-index: 1;
+        }
+        .screen.active { display: flex; }
+
+        /* ====== ЭКРАН 1: СТАРТ ====== */
+        #start-screen { background: #ffffff; }
+        #start-screen h1 {
+            font-size: 26px; margin-bottom: 40px; color: #111; padding: 0 20px;
+        }
+        .start-buttons { position: relative; width: 100%; height: 150px; }
+        .btn-yes, .btn-no {
+            position: absolute; border: none; border-radius: 50px;
+            font-weight: bold; cursor: pointer; transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        .btn-yes {
+            background: #4caf50; color: #fff;
+            font-size: 32px; padding: 20px 60px;
+            left: 50%; transform: translateX(-50%);
+            top: 20px; z-index: 2;
+        }
+        .btn-no {
+            background: #e53935; color: #fff;
+            font-size: 20px; padding: 12px 40px;
+            left: 50%; transform: translateX(-50%);
+            top: 100px; z-index: 1;
         }
 
-        /* Позиции и размеры сердечек (старые + новые, некоторые увеличены) */
-        .h1  { top: 4%;  left: 6%;    font-size: 28px; }  /* увеличено */
+        /* ====== ЭКРАН 2: ИГРА ====== */
+        #game-screen { background: #ffffff; border: 10px solid #ff69b4; }
+        #game-screen .hud {
+            position: absolute; top: 15px; left: 20px; font-size: 22px;
+            font-weight: bold; color: #333; z-index: 5;
+            background: rgba(255,255,255,0.8);
+            padding: 5px 15px; border-radius: 20px;
+        }
+        .player-heart {
+            position: absolute; bottom: 80px;
+            font-size: 50px; z-index: 10;
+            transition: transform 0.1s;
+        }
+        .bullet {
+            position: absolute; font-size: 20px; z-index: 8;
+        }
+        .enemy {
+            position: absolute; font-size: 30px; z-index: 6;
+            transition: opacity 0.8s ease, transform 0.8s ease, color 0.3s;
+        }
+        .enemy.hit {
+            color: #b06bff !important;
+            opacity: 0;
+            transform: translateY(-60px);
+        }
+
+        /* ====== ЭКРАН 3: ФИНАЛ (ВЫБОР) ====== */
+        #final-screen {
+            background-color: #ffb6c1;
+            transition: background-color 0.6s ease;
+        }
+        #final-screen.darkened { background-color: #d17b8a; }
+        #final-screen.lightened { background-color: #ffd6de; }
+
+        .heart-bg {
+            position: absolute; color: #ff69b4; opacity: 0.35;
+            user-select: none; pointer-events: none; z-index: 0;
+        }
+        .h1  { top: 4%;  left: 6%;    font-size: 28px; }
         .h2  { top: 10%; right: 10%;  font-size: 16px; }
-        .h3  { top: 20%; left: 4%;    font-size: 38px; }  /* большое */
+        .h3  { top: 20%; left: 4%;    font-size: 38px; }
         .h4  { top: 28%; right: 5%;   font-size: 22px; }
         .h5  { top: 40%; left: 10%;   font-size: 14px; }
-        .h6  { top: 48%; right: 8%;   font-size: 30px; }  /* увеличено */
+        .h6  { top: 48%; right: 8%;   font-size: 30px; }
         .h7  { top: 60%; left: 6%;    font-size: 18px; }
         .h8  { top: 70%; right: 7%;   font-size: 24px; }
-        .h9  { top: 80%; left: 12%;   font-size: 32px; }  /* увеличено */
+        .h9  { top: 80%; left: 12%;   font-size: 32px; }
         .h10 { top: 90%; right: 14%;  font-size: 15px; }
-        .h11 { top: 95%; left: 38%;   font-size: 20px; }
+        .h11 { top: 95%; left: 38%;   font-size: 20px;}
         .h12 { top: 6%;  right: 38%;  font-size: 14px; }
-
-        /* Новые сердечки */
         .h13 { top: 14%; left: 25%;   font-size: 12px; }
         .h14 { top: 18%; right: 28%;  font-size: 20px; }
         .h15 { top: 34%; left: 2%;    font-size: 16px; }
@@ -54,99 +106,126 @@
         .h17 { top: 55%; left: 2%;    font-size: 22px; }
         .h18 { top: 58%; right: 3%;   font-size: 14px; }
         .h19 { top: 76%; left: 3%;    font-size: 12px; }
-        .h20 { top: 84%; right: 3%;   font-size: 26px; }  /* увеличено */
+        .h20 { top: 84%; right: 3%;   font-size: 26px; }
         .h21 { top: 97%; left: 8%;    font-size: 14px; }
         .h22 { top: 97%; right: 8%;   font-size: 18px; }
 
-        .container {
-            padding: 20px;
-            max-width: 400px;
-            width: 100%;
-            position: relative;
-            z-index: 1;
+        .final-container {
+            position: relative; z-index: 1;
+            padding: 20px; width: 100%; max-width: 400px;
+        }
+        .final-container h2 {
+            font-size: 26px; margin-bottom: 20px; color: #111;
+        }
+        .final-buttons {
+            display: flex; flex-direction: column; gap: 15px; align-items: center;
+        }
+        .final-btn {
+            background: rgba(255,255,255,0.7);
+            border: 3px solid #4a90e2; color: #4a90e2;
+            font-size: 20px; font-weight: 600; cursor: pointer;
+            padding: 14px 40px; border-radius: 50px;
+            width: 100%; max-width: 280px;
+            transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .final-btn:active { background: #4a90e2; color: #fff; }
+        
+        .emoji-above {
+            font-size: 40px; display: block; margin-bottom: 5px;
         }
 
+        /* ====== ЭКРАН 4: НЕДОСТУПНО ====== */
+        #unavailable-screen {
+            background-color: #ffb6c1;
+        }
+        #unavailable-screen .heart-bg { opacity: 0.35; }
+        .unavailable-container {
+            position: relative; z-index: 1;
+            padding: 20px; max-width: 400px; width: 100%;
+        }
         .icon-circle {
-            width: 120px;
-            height: 120px;
-            background-color: #4a90e2;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0 auto 30px auto;
-            font-size: 60px;
+            width: 120px; height: 120px;
+            background-color: #4a90e2; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            margin: 0 auto 30px auto; font-size: 60px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-
-        h1 {
-            font-size: 28px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            color: #111;
+        .unavailable-container h1 {
+            font-size: 28px; font-weight: bold;
+            margin-bottom: 15px; color: #111;
         }
-
-        p {
-            font-size: 16px;
-            color: #222;
-            line-height: 1.5;
-            margin-bottom: 40px;
-            font-weight: 500;
+        .unavailable-container p {
+            font-size: 16px; color: #222;
+            line-height: 1.5; margin-bottom: 40px; font-weight: 500;
         }
-
         .close-btn {
             background: transparent;
-            border: 3px solid #4a90e2;
-            color: #4a90e2;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            padding: 12px 40px;
-            border-radius: 50px;
+            border: 3px solid #4a90e2; color: #4a90e2;
+            font-size: 18px; font-weight: 600; cursor: pointer;
+            padding: 12px 40px; border-radius: 50px;
             transition: all 0.2s;
         }
+        .close-btn:active { background: #4a90e2; color: #ffffff; }
 
-        .close-btn:active {
-            background: #4a90e2;
-            color: #ffffff;
-        }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <span class="heart h1">❤</span>
-    <span class="heart h2">❤</span>
-    <span class="heart h3">❤</span>
-    <span class="heart h4">❤</span>
-    <span class="heart h5">❤</span>
-    <span class="heart h6">❤</span>
-    <span class="heart h7">❤</span>
-    <span class="heart h8">❤</span>
-    <span class="heart h9">❤</span>
-    <span class="heart h10">❤</span>
-    <span class="heart h11">❤</span>
-    <span class="heart h12">❤</span>
-    <span class="heart h13">❤</span>
-    <span class="heart h14">❤</span>
-    <span class="heart h15">❤</span>
-    <span class="heart h16">❤</span>
-    <span class="heart h17">❤</span>
-    <span class="heart h18">❤</span>
-    <span class="heart h19">❤</span>
-    <span class="heart h20">❤</span>
-    <span class="heart h21">❤</span>
-    <span class="heart h22">❤</span>
-
-    <div class="container">
-        <div class="icon-circle">
-            ✋
+    <!-- ЭКРАН 1: Старт -->
+    <div id="start-screen" class="screen active">
+        <h1>Вы хотите поиграть в игру?</h1>
+        <div class="start-buttons">
+            <button class="btn-yes" onclick="startGame()">Да</button>
+            <button class="btn-no" id="btnNo" onmouseover="moveNoButton()" onclick="moveNoButton()">Нет</button>
         </div>
-        
-        <h1>Недоступно</h1>
-        
-        <p>Выход не доступен, так как вы не являетесь админом сервера. 😌</p>
-        
-        <button class="close-btn" onclick="closeApp()">Вернуться в мир</button>
+    </div>
+
+    <!-- ЭКРАН 2: Игра -->
+    <div id="game-screen" class="screen">
+        <div class="hud">Убито: <span id="score">0</span> / 50</div>
+        <div id="game-field"></div>
+    </div>
+
+    <!-- ЭКРАН 3: Финал (Выбор) -->
+    <div id="final-screen" class="screen">
+        <span class="heart-bg h1">❤</span><span class="heart-bg h2">❤</span><span class="heart-bg h3">❤</span><span class="heart-bg h4">❤</span>
+        <span class="heart-bg h5">❤</span><span class="heart-bg h6">❤</span><span class="heart-bg h7">❤</span><span class="heart-bg h8">❤</span>
+        <span class="heart-bg h9">❤</span><span class="heart-bg h10">❤</span><span class="heart-bg h11">❤</span><span class="heart-bg h12">❤</span><span class="heart-bg h13">❤</span><span class="heart-bg h14">❤</span><span class="heart-bg h15">❤</span><span class="heart-bg h16">❤</span>
+        <span class="heart-bg h17">❤</span><span class="heart-bg h18">❤</span><span class="heart-bg h19">❤</span><span class="heart-bg h20">❤</span>
+        <span class="heart-bg h21">❤</span><span class="heart-bg h22">❤</span>
+
+        <div class="final-container">
+            <h2>Что вы выберете?</h2>
+            <div class="final-buttons">
+                <div>
+                    <span class="emoji-above" id="emoji-stay">🤗</span>
+                    <button class="final-btn" onclick="chooseStay()">Остаться в игре</button>
+                </div>
+                <div>
+                    <span class="emoji-above" id="emoji-leave">😱</span>
+                    <button class="final-btn" onclick="chooseLeave()">Покинуть игру</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ЭКРАН 4: Недоступно -->
+    <div id="unavailable-screen" class="screen">
+        <span class="heart-bg h1">❤</span><span class="heart-bg h2">❤</span><span class="heart-bg h3">❤</span><span class="heart-bg h4">❤</span>
+        <span class="heart-bg h5">❤</span><span class="heart-bg h6">❤</span><span class="heart-bg h7">❤</span><span class="heart-bg h8">❤</span>
+        <span class="heart-bg h9">❤</span><span class="heart-bg h10">❤</span><span class="heart-bg h11">❤</span><span class="heart-bg h12">❤</span>
+        <span class="heart-bg h13">❤</span><span class="heart-bg h14">❤</span><span class="heart-bg h15">❤</span><span class="heart-bg h16">❤</span>
+        <span class="heart-bg h17">❤</span><span class="heart-bg h18">❤</span><span class="heart-bg h19">❤</span><span class="heart-bg h20">❤</span>
+        <span class="heart-bg h21">❤</span><span class="heart-bg h22">❤</span>
+
+        <div class="unavailable-container">
+            <div class="icon-circle">✋</div>
+            <h1>Недоступно</h1>
+            <p>Выход не доступен, так как вы не являетесь админом сервера. 😌</p>
+            <button class="close-btn" onclick="closeApp()">Вернуться в мир</button>
+        </div>
     </div>
 
     <script>
@@ -154,6 +233,185 @@
         tg.ready();
         tg.expand();
 
+        // ====== ЭКРАН 1: ЛОГИКА КНОПКИ "НЕТ" ======
+        let noButtonPositions = 0;
+        const noPositions = [
+            { top: '10px', left: '10%' },
+            { top: '60px', left: '70%' },
+            { top: '100px', left: '30%' }
+        ];
+
+        function moveNoButton() {
+            const btn = document.getElementById('btnNo');
+            if (noButtonPositions < 3) {
+                const pos = noPositions[noButtonPositions];
+                btn.style.top = pos.top;
+                btn.style.left = pos.left;
+                btn.style.transform = 'translateX(0)';
+                noButtonPositions++;
+            } else {
+                btn.style.top = '100px';
+                btn.style.left = '50%';
+                btn.style.transform = 'translateX(-50%)';
+                noButtonPositions = 0;
+            }
+        }
+
+        // ====== ПЕРЕКЛЮЧЕНИЕ ЭКРАНОВ ======
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        // ====== ИГРА ======
+        let score = 0;
+        let gameRunning = false;
+        const gameField = document.getElementById('game-field');
+        let playerHeart = null;
+        let bullets = [];
+        let enemies = [];
+
+        function startGame() {
+            showScreen('game-screen');
+            score = 0;
+            document.getElementById('score').innerText = score;
+            gameRunning = true;
+            gameField.innerHTML = '';
+            
+            playerHeart = document.createElement('div');
+            playerHeart.className = 'player-heart';
+            playerHeart.innerText = '💛';playerHeart.style.left = '50%';
+            playerHeart.style.transform = 'translateX(-50%)';
+            gameField.appendChild(playerHeart);
+
+            let startX = 0;
+            document.getElementById('game-screen').addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+            });
+            document.getElementById('game-screen').addEventListener('touchmove', (e) => {
+                if (!gameRunning) return;
+                const deltaX = e.touches[0].clientX - startX;
+                const currentLeft = parseFloat(playerHeart.style.left) || 50;
+                let newLeft = currentLeft + (deltaX / window.innerWidth) * 100;
+                newLeft = Math.max(5, Math.min(95, newLeft));
+                playerHeart.style.left = newLeft + '%';
+                startX = e.touches[0].clientX;
+            });
+
+            setInterval(shootBullet, 800);
+            setInterval(spawnEnemy, 1200);
+            requestAnimationFrame(gameLoop);
+        }
+
+        function shootBullet() {
+            if (!gameRunning) return;
+            const bullet = document.createElement('div');
+            bullet.className = 'bullet';
+            bullet.innerText = '💛';
+            const heartRect = playerHeart.getBoundingClientRect();
+            bullet.style.left = (heartRect.left + heartRect.width / 2 - 10) + 'px';
+            bullet.style.bottom = '80px';
+            gameField.appendChild(bullet);
+            
+            const bulletObj = {
+                element: bullet,
+                y: window.innerHeight - 130,
+                speed: 4
+            };
+            bullets.push(bulletObj);
+        }
+
+        function spawnEnemy() {
+            if (!gameRunning) return;
+            const enemy = document.createElement('div');
+            enemy.className = 'enemy';
+            enemy.innerText = '💛';
+            enemy.style.left = Math.random() * 80 + 10 + '%';
+            enemy.style.top = '-50px';
+            gameField.appendChild(enemy);
+
+            const enemyObj = {
+                element: enemy,
+                y: -50,
+                speed: 1.5,
+                hit: false
+            };
+            enemies.push(enemyObj);
+        }
+
+        function gameLoop() {
+            if (!gameRunning) return;
+
+            bullets.forEach((b, index) => {
+                b.y -= b.speed;
+                b.element.style.transform = `translateY(${-b.y + (window.innerHeight - 130)}px)`;
+                
+                if (b.y < -50) {
+                    b.element.remove();
+                    bullets.splice(index, 1);
+                }
+            });
+
+            enemies.forEach((e, index) => {
+                if (e.hit) return;
+                e.y += e.speed;
+                e.element.style.transform = `translateY(${e.y}px)`;
+                
+                bullets.forEach((b, bIndex) => {
+                    const enemyRect = e.element.getBoundingClientRect();
+                    const bulletRect = b.element.getBoundingClientRect();
+                    
+                    if (
+                        bulletRect.left < enemyRect.right &&
+                        bulletRect.right > enemyRect.left &&
+                        bulletRect.top < enemyRect.bottom &&
+                        bulletRect.bottom > enemyRect.top
+                    ) {
+                        e.hit = true;
+                        e.element.classList.add('hit');
+                        b.element.remove();
+                        bullets.splice(bIndex, 1);
+
+                        setTimeout(() => {
+                            e.element.remove();
+                            enemies.splice(index, 1);
+                            score++;
+                            document.getElementById('score').innerText = score;
+                            
+                            if (score >= 50) {
+                                endGame();
+                            }
+                        }, 800);
+                    }});
+
+                if (e.y > window.innerHeight) {
+                    e.element.remove();
+                    enemies.splice(index, 1);
+                }
+            });
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        function endGame() {
+            gameRunning = false;
+            setTimeout(() => {
+                showScreen('final-screen');
+            }, 1000);
+        }
+
+        // ====== ЭКРАН 3: ЛОГИКА ======
+        function chooseStay() {
+            // Возврат в чат Telegram
+            tg.close();
+        }
+
+        function chooseLeave() {
+            // Переход на экран "Недоступно"
+            showScreen('unavailable-screen');
+        }
+
+        // ====== ЭКРАН 4: ЗАКРЫТИЕ ======
         function closeApp() {
             tg.close();
         }
